@@ -1,164 +1,187 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import {
+    FaStar, FaUsers, FaUser, FaGamepad,
+    FaCode, FaDollarSign, FaWifi, FaFacebook, 
+    FaInstagram, FaShoppingCart, FaGem, FaCoins, 
+    FaBriefcase, FaStore, FaEye, FaCreditCard, 
+    FaGift, FaExchangeAlt, FaDatabase, FaSimCard, 
+    FaMapMarkerAlt, FaBullhorn, FaCalendarAlt, 
+    FaAd, FaEnvelope, FaTv, FaGamepad as FaController
+} from 'react-icons/fa';
+import { SiTiktok } from 'react-icons/si';
 
-// Mock FeatureCard component since it's not available in this environment
-const FeatureCard = ({ icon, title, gradientFrom, gradientTo, onClick }) => {
+const categories = [
+    {
+        icon: <FaStar />, 
+        title: 'Sponsoring',
+        color: 'from-orange-400 to-orange-600',
+        subcategories: [
+            { name: 'Business Sponsoring', icon: <FaBullhorn />, price: 'À partir de 299€', color: 'from-orange-500 to-red-500' },
+            { name: 'Event Sponsoring', icon: <FaCalendarAlt />, price: 'À partir de 199€', color: 'from-purple-500 to-indigo-500' },
+            { name: 'Digital Advertising', icon: <FaAd />, price: 'À partir de 99€', color: 'from-blue-500 to-cyan-500' }
+        ]
+    },
+    {
+        icon: <FaUsers />, 
+        title: 'Abonnés & Vues',
+        color: 'from-pink-500 to-red-400',
+        subcategories: [
+            { name: 'Facebook', icon: <FaFacebook />, price: '0.05€/abonné', color: 'from-blue-600 to-blue-700' },
+            { name: 'Instagram', icon: <FaInstagram />, price: '0.08€/abonné', color: 'from-pink-600 to-purple-600' },
+            { name: 'TikTok', icon: <SiTiktok />, price: '0.03€/vue', color: 'from-black to-gray-800' }
+        ]
+    },
+    {
+        icon: <FaUser />, 
+        title: 'Comptes',
+        color: 'from-purple-500 to-indigo-400',
+        subcategories: [
+            { name: 'Social Media', icon: <FaUsers />, price: '15€ - 150€', color: 'from-pink-500 to-red-500' },
+            { name: 'Email', icon: <FaEnvelope />, price: '5€ - 50€', color: 'from-green-500 to-emerald-500' },
+            { name: 'Streaming', icon: <FaTv />, price: '20€ - 200€', color: 'from-purple-500 to-indigo-500' }
+        ]
+    },
+    {
+        icon: <FaGamepad />, 
+        title: 'Gaming',
+        color: 'from-purple-600 to-pink-400',
+        subcategories: [
+            { name: 'Items', icon: <FaShoppingCart />, price: '1€ - 500€', color: 'from-green-500 to-emerald-600' },
+            { name: 'Accounts', icon: <FaController />, price: '10€ - 1000€', color: 'from-blue-500 to-indigo-600' },
+            { name: 'Gems & Coins', icon: <FaGem />, price: '0.10€/100 gems', color: 'from-yellow-500 to-orange-600' }
+        ]
+    },
+    {
+        icon: <FaCode />, 
+        title: 'Web',
+        color: 'from-sky-400 to-blue-500',
+        subcategories: [
+            { name: 'Portfolio', icon: <FaBriefcase />, price: '299€ - 999€', color: 'from-gray-600 to-gray-800' },
+            { name: 'E-commerce', icon: <FaStore />, price: '599€ - 2999€', color: 'from-green-600 to-emerald-700' },
+            { name: 'Vitrine', icon: <FaEye />, price: '199€ - 699€', color: 'from-indigo-600 to-purple-700' }
+        ]
+    },
+    {
+        icon: <FaDollarSign />, 
+        title: 'USDs',
+        color: 'from-green-400 to-emerald-500',
+        subcategories: [
+            { name: 'Top-up', icon: <FaCreditCard />, price: '5€ - 500€', color: 'from-blue-500 to-indigo-500' },
+            { name: 'Gift Cards', icon: <FaGift />, price: '10€ - 200€', color: 'from-red-500 to-pink-500' },
+            { name: 'Transfers', icon: <FaExchangeAlt />, price: '1% commission', color: 'from-green-500 to-emerald-500' }
+        ]
+    },
+    {
+        icon: <FaWifi />, 
+        title: 'Mobile Internet',
+        color: 'from-blue-400 to-indigo-500',
+        subcategories: [
+            { name: 'Data Packages', icon: <FaDatabase />, price: '5€ - 50€', color: 'from-blue-500 to-cyan-500' },
+            { name: 'eSIM', icon: <FaSimCard />, price: '15€ - 100€', color: 'from-purple-500 to-indigo-500' },
+            { name: 'Local Offers', icon: <FaMapMarkerAlt />, price: '3€ - 30€', color: 'from-green-500 to-teal-500' }
+        ]
+    },
+];
+
+const Categories = () => {
+    const [activeCategory, setActiveCategory] = useState(0); // Set to 0 to show Sponsoring by default
+
+    const toggleCategory = (index) => {
+        setActiveCategory(index === activeCategory ? null : index);
+    };
+
     return (
-        <div
-            className={`bg-gradient-to-br ${gradientFrom} ${gradientTo} p-4 sm:p-5 md:p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105 h-full flex flex-col items-center justify-center text-center`}
-            onClick={onClick}
-        >
-            <div className="mb-3 sm:mb-4">
-                {icon}
+        <div id='home' className="w-full min-h-screen bg-gradient-to-b from-[#1F0036] to-[#0F0020] text-white py-8 sm:py-12 lg:py-16 px-3 sm:px-4 lg:px-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white text-center mb-8 sm:mb-10 lg:mb-12">
+                <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                    Products
+                </span>
+            </h2>
+            <h4 className='text-2xl sm:text-4xl md:text-5xl lg:text-2xl font-bold text-white text-center mb-8 sm:mb-10 lg:mb-12'>Check our Digital Services</h4>
+
+            <div className="max-w-7xl mx-auto">
+                {/* Main Categories - Always Single Line */}
+                <div className="flex justify-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 mb-8 sm:mb-10 lg:mb-12 overflow-x-auto pb-2">
+                    {categories.map((category, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => {
+                                console.log("Category clicked:", idx);
+                                toggleCategory(idx);
+                            }}
+                            className={`flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 rounded-lg sm:rounded-xl shadow-lg cursor-pointer
+                                       bg-gradient-to-br ${category.color}
+                                       flex flex-col justify-center items-center transition-all duration-300 hover:scale-105 focus:outline-none
+                                       ${activeCategory === idx ? 'ring-1 sm:ring-2 lg:ring-4 ring-white/30 scale-105' : ''}`}
+                        >
+                            <div className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl mb-0.5 sm:mb-1">{category.icon}</div>
+                            <div className="text-[8px] sm:text-[10px] md:text-xs lg:text-sm font-semibold text-center px-0.5 sm:px-1 leading-tight">
+                                {category.title.split(' ').map((word, i) => (
+                                    <div key={i} className="whitespace-nowrap">{word}</div>
+                                ))}
+                            </div>
+                        </button>
+                    ))}
+                </div>
+
+                {/* Subcategories Section */}
+                {activeCategory !== null && (
+                    <div className="w-full animate-in slide-in-from-top-5 duration-500">
+                        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white text-center mb-6 sm:mb-8">
+                            {categories[activeCategory].title}
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
+                            {categories[activeCategory].subcategories.map((product, subIdx) => (
+                                <div
+                                    key={subIdx}
+                                    className={`bg-gradient-to-br ${categories[activeCategory].color} rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group hover:scale-105`}
+                                >
+                                    <div className="flex items-center mb-3 sm:mb-4">
+                                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg flex items-center justify-center mr-3 sm:mr-4">
+                                            <div className="text-white text-lg sm:text-xl">{product.icon}</div>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="font-bold text-white text-base sm:text-lg truncate">{product.name}</h3>
+                                            <p className="text-xs sm:text-sm text-white/80">{product.price}</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-white/70 text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed line-clamp-3">
+                                        {product.name === 'Business Sponsoring' && 'Premium business sponsoring packages with featured placement and targeted marketing campaigns.'}
+                                        {product.name === 'Event Sponsoring' && 'Sponsor events and get maximum visibility with our comprehensive event sponsoring solutions.'}
+                                        {product.name === 'Digital Advertising' && 'Comprehensive digital advertising campaigns across multiple platforms and channels.'}
+                                        {product.name === 'Facebook' && 'Boost your Facebook presence with real followers, likes, and engagement from active users.'}
+                                        {product.name === 'Instagram' && 'Grow your Instagram account with authentic followers and increased engagement rates.'}
+                                        {product.name === 'TikTok' && 'Increase your TikTok visibility with views, followers, and viral content promotion.'}
+                                        {product.name === 'Social Media' && 'Premium social media accounts with established followers and engagement history.'}
+                                        {product.name === 'Email' && 'Professional email accounts with custom domains and advanced security features.'}
+                                        {product.name === 'Streaming' && 'High-quality streaming accounts for Netflix, Spotify, and other premium platforms.'}
+                                        {product.name === 'Items' && 'Rare and valuable gaming items for popular games and platforms.'}
+                                        {product.name === 'Accounts' && 'High-level gaming accounts with progress, achievements, and premium features.'}
+                                        {product.name === 'Gems & Coins' && 'In-game currency and premium resources for mobile and PC games.'}
+                                        {product.name === 'Portfolio' && 'Professional portfolio websites showcasing your work and skills.'}
+                                        {product.name === 'E-commerce' && 'Full-featured online stores with payment processing and inventory management.'}
+                                        {product.name === 'Vitrine' && 'Beautiful showcase websites for businesses and personal branding.'}
+                                        {product.name === 'Top-up' && 'Instant top-up services for mobile credit, gaming wallets, and digital platforms.'}
+                                        {product.name === 'Gift Cards' && 'Digital gift cards for popular stores, gaming platforms, and services.'}
+                                        {product.name === 'Transfers' && 'Secure money transfers with competitive rates and fast processing.'}
+                                        {product.name === 'Data Packages' && 'Affordable mobile data packages for all major carriers and countries.'}
+                                        {product.name === 'eSIM' && 'Digital SIM cards for international travel and local connectivity.'}
+                                        {product.name === 'Local Offers' && 'Special local mobile internet deals and promotional packages.'}
+                                    </p>
+                                    <div className="flex justify-between items-center flex-wrap gap-2">
+                                        <span className="text-xs sm:text-sm text-white/60">Click here </span>
+                                        <button className="bg-white/20 hover:bg-white/30 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300">
+                                            Order
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
-            <h3 className="text-white font-bold text-base sm:text-lg">{title}</h3>
         </div>
     );
 };
 
-export default function Categories() {
-    // Use React Router DOM's useNavigate hook
-    const navigate = useNavigate();
-
-    const categories = [
-        {
-            id: 1,
-            icon: (
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                </svg>
-            ),
-            title: "Sponsoring",
-            description: "Boost your business visibility with our comprehensive sponsoring packages. Get featured placement, premium advertising, and targeted marketing campaigns.",
-            gradientFrom: "from-yellow-500",
-            gradientTo: "to-orange-500",
-            route: "/sponsoring"
-        },
-        {
-            id: 2,
-            icon: (
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                </svg>
-            ),
-            title: "Followers",
-            description: "Grow your social media presence on Instagram, Facebook, and TikTok. Get real, active followers to boost your engagement and credibility.",
-            gradientFrom: "from-pink-500",
-            gradientTo: "to-rose-500",
-            route: "/followers"
-        },
-        {
-            id: 3,
-            icon: (
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 3v12a1 1 0 001 1h8a1 1 0 001-1V7M9 7h6M9 11h6m-6 4h6"></path>
-                    <rect x="6" y="4" width="12" height="16" rx="1" fill="none"></rect>
-                    <circle cx="12" cy="18" r="1"></circle>
-                </svg>
-            ),
-            title: "Gaming",
-            description: "Level up your gaming experience with premium game accounts, in-game currency top-ups, and exclusive gaming services for all popular platforms.",
-            gradientFrom: "from-purple-500",
-            gradientTo: "to-indigo-500",
-            route: "/gaming"
-        },
-        {
-            id: 4,
-            icon: (
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-            ),
-            title: "Accounts",
-            description: "Level up your gaming experience with premium game accounts, in-game currency top-ups, and exclusive gaming services for all popular platforms.",
-            gradientFrom: "from-purple-500",
-            gradientTo: "to-indigo-500",
-            route: "/accounts"
-        },
-        {
-            id: 5,
-            icon: (
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                </svg>
-            ),
-            title: "Web Development",
-            description: "Professional web development services including custom websites, e-commerce solutions, responsive designs, and modern web applications.",
-            gradientFrom: "from-blue-500",
-            gradientTo: "to-cyan-500",
-            route: "/web-development"
-        },
-        {
-            id: 6,
-            icon: (
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-            ),
-            title: "USDs",
-            description: "Secure digital currency exchange services. Buy, sell, and trade USD digital currencies with competitive rates and instant transactions.",
-            gradientFrom: "from-green-500",
-            gradientTo: "to-emerald-500",
-            route: "/usds"
-        },
-        {
-            id: 7,
-            icon: (
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
-                </svg>
-            ),
-            title: "Mobile Internet",
-            description: "Stay connected with our mobile internet packages. Affordable data plans, international roaming, and high-speed connectivity solutions.",
-            gradientFrom: "from-teal-500",
-            gradientTo: "to-blue-500",
-            route: "/mobile-internet"
-        }
-    ];
-
-    const handleCardClick = (route) => {
-        navigate(route);
-    };
-
-    return (
-        <div id='home' className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen">
-            {/* Header Text with Top Margin for Navbar */}
-            <section className="pt-14 sm:pt-16 md:pt-20 lg:pt-24 xl:pt-28 pb-4 sm:pb-6 md:pb-8">
-                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 text-center">
-                    <h1 className="mt-10 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-bold text-white mt-2 sm:mt-3 md:mt-4 lg:mt-6 xl:mt-10 leading-tight">
-                        <span className="text-3xl md:text-5xl bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent block">
-                            Welcome by Ayhem Boubaker
-                        </span>
-                        <span className="block text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl mt-1 sm:mt-2 md:mt-3 font-medium text-white/90">
-                            Choose from our comprehensive range of digital services
-                        </span>
-                    </h1>
-                </div>
-            </section>
-
-            {/* Categories Section - Fully Responsive Grid Layout */}
-            <section className="py-4 sm:py-6 md:py-8 lg:py-12 xl:py-16 bg-white/5 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-                    {/* Responsive Grid: 2x3 on mobile, 1 row of 6 on desktop */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8">
-                        {categories.map((category, index) => (
-                            <div
-                                key={category.id}
-                                className="animate-[fadeInUp_0.6s_ease-out] w-full"
-                                style={{ animationDelay: `${index * 0.1}s` }}
-                            >
-                                <FeatureCard
-                                    icon={category.icon}
-                                    title={category.title}
-                                    gradientFrom={category.gradientFrom}
-                                    gradientTo={category.gradientTo}
-                                    onClick={() => handleCardClick(category.route)}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-        </div>
-    );
-}
+export default Categories;

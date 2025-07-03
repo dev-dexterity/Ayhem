@@ -33,7 +33,6 @@ export default function Header() {
     { name: 'Home', id: 'home' },
     { name: 'About me', id: 'about' },
     { name: 'Why Choose me?', id: 'why-choose' },
-    { name: 'Portfolio', id: 'portfolio' },
     { name: 'Contact', id: 'contact' }
   ];
 
